@@ -9,15 +9,16 @@ services:
       - postgres_data:/var/lib/postgresql/data/
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    environment:
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 0.0.0.0 [::1]
+    command: python manage.py runserver --settings biostar.forum.settings
+    env_file:
+      - .env.dev
     volumes:
       - .:/code
     ports:
       - 8000:8000
     depends_on:
       - db
+
 
 volumes:
   postgres_data:

@@ -141,6 +141,8 @@ REMAP_TYPE_DISPLAY = False
 # Post types displayed when creating, empty list displays all types.
 ALLOWED_POST_TYPES = []
 
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
 
 # Import the default pagedown css first, then our custom CSS sheet
 # to avoid having to specify all the default styles

@@ -12,11 +12,13 @@ WORKDIR /code
 
 # Install dependencies
 RUN pip install pipenv
-COPY requirements.txt requirements-dev.txt /code/
+COPY conf/requirements.txt Makefile /code/
 RUN pip install -r requirements.txt
 #RUN pip install -r requirements-dev.txt
 
+
 # Copy project
 COPY . /code/
+RUN make forum
 
 WORKDIR /code
