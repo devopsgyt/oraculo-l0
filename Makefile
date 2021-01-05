@@ -1,3 +1,39 @@
+# use the rest as arguments for targets
+TARGET_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+# ...and turn them into do-nothing targets
+$(eval $(TARGET_ARGS):;@:)
+
+-include .env
+
+update:
+	git submodule update --remote
+
+start:
+	docker-compose up -d
+
+logs:
+	docker-compose logs -f --tail=100 $(TARGET_ARGS)
+
+bash:
+	docker-compose exec $(TARGET_ARGS) bash
+
+rebuild:
+	docker-compose build --force-rm $(TARGET_ARGS)
+
+clean-restart:
+	docker-compose stop $(TARGET_ARGS) && docker-compose rm -f $(TARGET_ARGS) && make rebuild $(TARGET_ARGS) && docker-compose up -d --no-deps --build $(TARGET_ARGS)
+
+soft-restart:
+	docker-compose stop $(TARGET_ARGS) && docker-compose rm -f $(TARGET_ARGS) && docker-compose up -d
+
+test:
+	STAGE=test APP_SETTINGS="authentek.server.config.TestingConfig" pytest
+
+freeze:
+	pipenv run pipenv_to_requirements
+
+
+################################
 # Database JSON dump files.
 SAVE_FILE=export/backup/db.last.json
 
