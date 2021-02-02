@@ -5,10 +5,14 @@ from biostar.accounts.settings import *
 # Inherit from the accounts settings file.
 from biostar.planet.settings import *
 
+env = environ.Env()
+# reading .env file
+environ.Env.read_env()
+
 # Django debug flag.
 DEBUG = True
 
-SITE_NAME = 'Biostar Forum'
+SITE_NAME = env("SITE_NAME",default='Biostar Forum')
 
 # Site settings.
 POSTS_PER_PAGE = 50

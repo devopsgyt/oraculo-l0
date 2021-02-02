@@ -3,6 +3,11 @@ Common settings that are applicable to all biostar apps.
 """
 
 import os
+import environ
+
+env = environ.Env()
+# reading .env file
+environ.Env.read_env()
 
 # The logging configuration
 from biostar.logconf import LOGGING
@@ -163,16 +168,24 @@ DATABASE_DIR = os.path.join(BASE_DIR, 'export', 'db')
 
 os.makedirs(DATABASE_DIR, exist_ok=True)
 
-DATABASE_NAME = os.environ.setdefault("DATABASE_NAME", "database.db")
+# DATABASE_NAME = os.environ.setdefault("DATABASE_NAME", "database.db")
 # Ensure database is inside database directory.
-DATABASE_NAME = os.path.join(DATABASE_DIR, DATABASE_NAME)
+# DATABASE_NAME = os.path.join(DATABASE_DIR, DATABASE_NAME)
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': DATABASE_NAME,
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env("MYSQL_DATABASE"),
+        'USER': env("MYSQL_USER"),
+        'PASSWORD': env("MYSQL_PASSWORD"),
+        'HOST': env("MYSQL_HOST"),
+        'PORT': env("MYSQL_PORT"),
+        'OPTIONS': {
+            'charset': 'utf8'  # This is the important line
+        }
     }
 }
+
 
 ALLOWED_HOSTS = ['www.lvh.me', 'localhost', '127.0.0.1']
 

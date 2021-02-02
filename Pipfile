@@ -35,6 +35,8 @@ langdetect = "*"
 Django = "==3.1.0"
 Pillow = "==7.1.0"
 Whoosh = "==2.7.4"
+django-environ = "*"
+mysqlclient = "*"
 
 [requires]
 python_version = "3.8"

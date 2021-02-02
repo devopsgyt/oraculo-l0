@@ -10,9 +10,12 @@ ENV PYTHONUNBUFFERED 1
 # Set work directory
 WORKDIR /code
 
+RUN apt update
+RUN apt-get install -y python-dev default-mysql-client
+
 # Install dependencies
 RUN pip install pipenv
-COPY conf/requirements.txt Makefile /code/
+COPY requirements.txt Makefile /code/
 RUN pip install -r requirements.txt
 #RUN pip install -r requirements-dev.txt
 

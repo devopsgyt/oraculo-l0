@@ -132,7 +132,7 @@ class Profile(models.Model):
     my_tags = models.CharField(default="", max_length=MAX_TEXT_LEN, blank=True)
 
     # The tag value is the canonical form of the post's tags
-    watched_tags = models.CharField(max_length=MAX_TEXT_LEN, default="", blank=True)
+    watched_tags = models.TextField(max_length=MAX_TEXT_LEN, default="", blank=True)
 
     # Tag objects
     watched = TaggableManager()

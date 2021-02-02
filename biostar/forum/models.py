@@ -2,7 +2,6 @@ import logging
 
 import bleach
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
@@ -10,8 +9,7 @@ from django.shortcuts import reverse
 from taggit.managers import TaggableManager
 from biostar.accounts.models import Profile
 from . import util
-
-User = get_user_model()
+from django.contrib.auth.models import User
 
 # The maximum length in characters for a typical name and text field.
 MAX_NAME_LEN = 256
@@ -20,7 +18,6 @@ MAX_TEXT_LEN = 10000
 MAX_LOG_LEN = 20 * MAX_TEXT_LEN
 
 logger = logging.getLogger("engine")
-
 
 class PostManager(models.Manager):
 

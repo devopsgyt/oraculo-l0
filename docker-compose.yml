@@ -1,24 +1,30 @@
 version: '3.7'
 
 services:
-  db:
-    image: "postgres:11"
-    environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
+  mariadb:
+    image: mariadb:10.5.8-focal
+    env_file:
+      - ./.env
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - ./.docker/mysql/init/:/docker-entrypoint-initdb.d/
+      - ./data/mysql
+    ports:
+      - "3308:3306"
   web:
     build: .
-    command: python manage.py runserver --settings biostar.forum.settings
+    command: bash -c "python manage.py makemigrations --settings biostar.forum.settings && python manage.py migrate --settings biostar.forum.settings && python manage.py runserver 0.0.0.0:8000 --settings biostar.forum.settings"
     env_file:
-      - .env.dev
+      - .env
     volumes:
       - .:/code
     ports:
       - 8000:8000
     depends_on:
-      - db
-
-
-volumes:
-  postgres_data:
+      - mariadb
+    links:
+      - mariadb
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

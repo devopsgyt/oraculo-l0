@@ -20,9 +20,9 @@ class EmailAddress(models.Model):
     STATE_CHOICES = [(ACTIVE, "Active"), (DELETED, "Deleted"), (INACTIVE, "Inactive"), (UNSUBSCRIBED, "Unsubscribed")]
 
     # Require email
-    email = models.CharField(max_length=MAX_NAME_LEN, unique=True, blank=False)
-    name = models.CharField(max_length=MAX_NAME_LEN)
-    uid = models.CharField(max_length=32, unique=True)
+    email = models.TextField(max_length=MAX_NAME_LEN, unique=True, blank=False)
+    name = models.TextField(max_length=MAX_NAME_LEN)
+    uid = models.TextField(max_length=32, unique=True)
     state = models.IntegerField(default=ACTIVE, choices=STATE_CHOICES)
 
     def __str__(self):
@@ -37,10 +37,10 @@ class EmailGroup(models.Model):
     """
     Represents an group of email addresses.
     """
-    name = models.CharField(max_length=MAX_NAME_LEN)
-    uid = models.CharField(max_length=32, unique=True)
-    text = models.CharField(max_length=MAX_TEXT_LEN)
-    html = models.CharField(max_length=MAX_TEXT_LEN)
+    name = models.TextField(max_length=MAX_NAME_LEN)
+    uid = models.TextField(max_length=32, unique=True)
+    text = models.TextField(max_length=MAX_TEXT_LEN)
+    html = models.TextField(max_length=MAX_TEXT_LEN)
 
     def __str__(self):
         return self.name
