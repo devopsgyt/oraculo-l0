@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.5.8-focal
+        envFrom:
+        - secretRef:
+            name: mariadb-env
+        volumeMounts:
+        - mountPath: /docker-entrypoint-initdb.d
+          name: mariadb-init
+        - mountPath: /var/lib/mysql
+          name: mariadb-data
+        ports:
+        - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - port: 3306
+      targetPort: 3306
+  clusterIP: None # para permitir que otros servicios se conecten al puerto

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: <your-web-image> # Debes construir y subir la imagen o usar una imagen existente
+        command:
+        - bash
+        - -c
+        - "python manage.py makemigrations --settings biostar.forum.settings && python manage.py migrate --settings biostar.forum.settings && python manage.py runserver 0.0.0.0:8000 --settings biostar.forum.settings"
+        envFrom:
+        - secretRef:
+            name: web-env
+        volumeMounts:
+        - mountPath: /code
+          name: code-volume
+        ports:
+        - containerPort: 8000
+      volumes:
+      - name: code-volume
+        hostPath:
+          path: /code
+          type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  selector:
+    app: web
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: LoadBalancer

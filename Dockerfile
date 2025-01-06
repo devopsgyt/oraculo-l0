@@ -11,17 +11,20 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /code
 
 RUN apt update
-RUN apt-get install -y python-dev default-mysql-client
+RUN apt-get install -y python-dev-is-python3 default-mysql-client
 
 # Install dependencies
 RUN pip install pipenv
 COPY requirements.txt Makefile /code/
+#RUN pip install --upgrade
 RUN pip install -r requirements.txt
 #RUN pip install -r requirements-dev.txt
 
 
 # Copy project
 COPY . /code/
-RUN make forum
+#RUN make forum
 
-WORKDIR /code
+#WORKDIR /code
+RUN pip install flask
+CMD ["python", "/code/test.py"]
