@@ -1,3 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-init-scripts
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS biostar;
+    CREATE USER IF NOT EXISTS 'biostar'@'%' IDENTIFIED BY 'biostar';
+    GRANT ALL PRIVILEGES ON biostar.* TO 'biostar'@'%';
+    FLUSH PRIVILEGES;
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,10 +25,13 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: mariadb:10.5.8-focal
-        envFrom:
-        - secretRef:
-            name: mariadb-env
+        image: mariadb:latest
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-env
+              key: MYSQL_ROOT_PASSWORD  # El nombre de la clave en el Secret
         volumeMounts:
         - mountPath: /docker-entrypoint-initdb.d
           name: mariadb-init
@@ -25,6 +39,13 @@ spec:
           name: mariadb-data
         ports:
         - containerPort: 3306
+      volumes:
+      - name: mariadb-init
+        configMap:
+          name: mariadb-init-scripts  # O el nombre de tu ConfigMap si estás usando uno para inicializar
+      - name: mariadb-data
+        persistentVolumeClaim:
+          claimName: mariadb-pvc  # El nombre de tu PVC (PersistentVolumeClaim) para el almacenamiento persistente
 ---
 apiVersion: v1
 kind: Service
@@ -36,4 +57,5 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
-  clusterIP: None # para permitir que otros servicios se conecten al puerto
+  clusterIP: None  # para permitir que otros servicios se conecten al puerto
+

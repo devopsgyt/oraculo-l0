@@ -23,8 +23,8 @@ RUN pip install -r requirements.txt
 
 # Copy project
 COPY . /code/
-#RUN make forum
+RUN make forum
 
-#WORKDIR /code
-RUN pip install flask
-CMD ["python", "/code/test.py"]
+WORKDIR /code
+#RUN pip install flask
+#CMD ["python", "/code/test.py"]
